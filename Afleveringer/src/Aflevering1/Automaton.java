@@ -1,50 +1,61 @@
+package Aflevering1;
+
 import java.util.Scanner;
 
-
 public class Automaton {
-
-	/**
-	 * @param args
-	 */
+	
 	public static void main(String[] args) {
+		char b = '\0';
+		String a = null;
+		String n = null;
 		int sum = 0;
 		
 		Scanner console = new Scanner(System.in);
 		
-		int[] Payment = new int[20];
+		int max_coins = 20;
+		int max_orders = 10;
 		
-		char[] a = new char[20];
-		String[][] n = new String[20][20];
-		
-		
-		outerloop:
-		for(int j = 0; j < a.length; j++) {
-			a[j] = console.next().charAt(0);
-			
-			boolean p = isInteger(n[j][0]);
-			
-			for(int i = 1; i < Payment.length; i++){
+		outerloop: for(int i = 0; i < max_orders; i++) {
+			sum = 0;
+			a = null;
 
-				n[j][i] = console.next();
+			a = console.next();
+			
+			boolean q = isChar(a);
+			
+			if(q == true) {
+				b = a.charAt(0);
+				if(b != 'W' && b != 'C' && b != 'J') {
+					System.out.println("ERROR");
+					break outerloop;
+				}
+			} else if (q == false && a.equals("TERMINATE")) {
+				System.out.println("DONE");
+				break outerloop;
+			}
+				
+			n = console.next();
+			
+			boolean p = isInteger(n);
+
+			for(int j = 0; j < max_coins; j++) {
 				if(p == true) {
-					int o = Integer.parseInt(n[j][i]);
+					int o = Integer.parseInt(n);
 					if(o == 1 || o == 2 || o == 5 || o == 10 || o == 20){
-						Payment[i] = o;
+						sum += o;
+						n = console.next();
+						p = isInteger(n);
 					}
-					n[j][i] = console.next();
-					p = isInteger(n[j][i]);
-				} else if (p != true && n[j][i] == "SELECT"){
-					for(int k = 0; k < Payment.length; k++) {
-						sum += Payment[k];
-					}
+				} else if(p != true && n.equals("SELECT")) {
+					vendingMachine(b, sum);
 					break;
-				} else if (p != true && n[j][i] == "TERMINATE"){
-					System.out.println(sum);
-					System.out.println("Done");
+				} else if(p != true && n.equals("TERMINATE")){
+					vendingMachine(b, sum);
+					System.out.println("DONE");
 					break outerloop;
 				}
 			}
-		}	
+		}
 		
 //		vendingMachine(a, sum);
 		
@@ -53,7 +64,7 @@ public class Automaton {
 //		vendingMachine('C', 12);
 		
 		console.close();
-
+		
 	}
 	
 	public static void vendingMachine(char a, int n){
@@ -94,6 +105,16 @@ public class Automaton {
 		}
 		
 		return true;
+	}
+	
+	public static boolean isChar(String a) {
+		int n = a.length();
+		
+		if(n == 1 /*&& (a.charAt(0) == 'C' || a.charAt(0) == 'J' || a.charAt(0) == 'W')*/) {
+			return true; 
+		} else {
+			return false;
+		}
 	}
 
 }
